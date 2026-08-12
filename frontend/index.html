@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Q&A RAG</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <h1>Document Q&A</h1>
+      <p>Upload a PDF, ask questions, and get grounded answers with source citations.</p>
+    </header>
+
+    <section class="card" id="status-card">
+      <div class="status-row">
+        <span id="status-badge" class="badge badge-warn">Checking...</span>
+        <span id="status-text">Connecting to server</span>
+      </div>
+      <ul id="doc-list" class="doc-list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Upload PDF</h2>
+      <form id="upload-form">
+        <input type="file" id="pdf-file" accept=".pdf" required />
+        <button type="submit" id="upload-btn">Upload &amp; Index</button>
+      </form>
+      <p id="upload-msg" class="hint"></p>
+    </section>
+
+    <section class="card">
+      <h2>Ask a Question</h2>
+      <form id="query-form">
+        <textarea id="question" rows="4" placeholder="What are the key requirements of this document?" required></textarea>
+        <div class="btn-row">
+          <button type="submit" id="submit-btn">Ask (Stream)</button>
+        </div>
+      </form>
+
+      <div id="loading" class="loader hidden">
+        <div class="spinner"></div>
+        <span id="loading-msg">Retrieving relevant chunks and generating answer...</span>
+      </div>
+    </section>
+
+    <section id="result" class="card hidden">
+      <h2>Answer</h2>
+      <pre id="answer"></pre>
+      <div id="metadata" class="metadata"></div>
+    </section>
+
+    <section id="context-section" class="card hidden">
+      <h2>Retrieved Context Chunks</h2>
+      <p class="hint">Collapsible view of chunks used to ground the answer.</p>
+      <div id="context-chunks"></div>
+    </section>
+
+    <section id="error" class="card error-card hidden"></section>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
