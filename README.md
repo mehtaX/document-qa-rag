@@ -50,9 +50,18 @@ An end-to-end Retrieval-Augmented Generation (RAG) application that accepts PDF 
 
 ## Local Setup
 
+### Running with Streamlit (Recommended)
+
 ```bash
-git clone <your-repo-url>
-cd document-qa-rag
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+Open **http://localhost:8501** in your browser.
+
+### Running with FastAPI + HTML Frontend
+
+```bash
 pip install -r requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 8000
 ```
@@ -84,6 +93,21 @@ VECTOR_STORE_PATH=faiss_store
 | `/query/stream` | POST | Ask with streaming NDJSON response |
 | `/documents` | GET | List indexed documents |
 
+## Deployment (Streamlit Community Cloud)
+
+1. Push the code to your GitHub repository.
+2. Go to [Streamlit Community Cloud](https://share.streamlit.io/) and log in.
+3. Click **New app**, select your repository, branch, and set the Main file path to `streamlit_app.py`.
+4. Click **Advanced settings...**.
+5. In the **Secrets** section, add your environment variables:
+   ```toml
+   LLM_PROVIDER = "groq"
+   GROQ_API_KEY = "your-groq-api-key-here"
+   LLM_MODEL = "llama-3.1-8b-instant"
+   EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+   ```
+6. Click **Deploy**.
+
 ## Deployment (Render)
 
 1. Push to a public GitHub repo
@@ -105,6 +129,7 @@ docker run -p 8000:8000 document-qa-rag
 ```
 document-qa-rag/
 ├── app.py              # FastAPI server (upload, query, stream)
+├── streamlit_app.py    # Streamlit interface (Q&A UI, upload, streaming)
 ├── rag_pipeline.py     # RAG pipeline (ingest, retrieve, generate)
 ├── frontend/           # Web UI (upload, streaming, context chunks)
 ├── uploads/            # Uploaded PDFs (created at runtime)

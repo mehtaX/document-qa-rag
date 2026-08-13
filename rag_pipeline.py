@@ -36,9 +36,8 @@ def _create_llm() -> BaseChatModel:
     from langchain_groq import ChatGroq
 
     api_key = os.environ.get("GROQ_API_KEY")
-    if not api_key:
-      raise ValueError("GROQ_API_KEY is required when LLM_PROVIDER=groq")
-    return ChatGroq(model=LLM_MODEL, temperature=0, api_key=api_key)
+    # Use placeholder if key not found to prevent crash on startup
+    return ChatGroq(model=LLM_MODEL, temperature=0, api_key=api_key or "PLACEHOLDER")
 
   return ChatOllama(model=LLM_MODEL, temperature=0)
 CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE", "800"))
@@ -94,6 +93,13 @@ Answer:
   def _log(self, message: str) -> None:
     logger.info(message)
     self.step_logs.append(message)
+
+  def set_api_key(self, api_key: str) -> None:
+    """Dynamically update the Groq API key and rebuild the LLM generation chain."""
+    os.environ["GROQ_API_KEY"] = api_key
+    self.llm = _create_llm()
+    self.answer_chain = self.answer_prompt | self.llm
+    self._log("LLM chain reinitialized with new API key")
 
   def clean_text(self, text: str) -> str:
     text = re.sub(r"\s+", " ", text)
